@@ -37,10 +37,12 @@ Note that `numpy 1.18` will cause problem for `pycocotools`.
 I'd suggest create a new conda environment.
 
 ```
-conda create -n tinyyolo python=3.7 numpy=1.17 matplotlib tqdm opencv
+conda create -n tinyyolo python=3.7 numpy=1.17 matplotlib tqdm opencv Cython
 conda activate tinyyolo
 pip install mxnet-cu101mkl pycocotools
 ```
+
+Other versions like `mxnet-cu92` and `mxnet-cu92mkl` are all acceptable.
 
 #### 1) Code
 ```
@@ -59,12 +61,31 @@ ln -s /disk1/data/coco
 ```
 
 #### 3) weights
-TODO
+I'm currently training the network!
 
 ---
 
 ### Training
-TODO
+You can either edit the parameters by changing the default values in `trian.py` or specify it.
+
+Personally, I would recommend create a new file named `train.sh` and adds
+
+```
+python train.py --syncbn \
+--batch-size 64 \
+--gpus 4,5  \
+--num-workers 16 \
+--warmup-epochs 2 \
+--lr 0.001 \
+--epochs 200 \
+--lr-mode step \
+--save-prefix ./results/1/ \
+--save-interval 1 \
+--log-interval 100 \
+--start-epoch 0 \
+--optimizer sgd \
+--label-smooth 
+```
 
 ---
 
@@ -96,3 +117,4 @@ export OMP_DYNAMIC="FALSE"
 ### Known Issues
 
 - Mixup will not work
+- `Adam` optimizer run slowly
