@@ -17,7 +17,12 @@ DO NOT RUN THE CODE IN THIS STAGE!
 
 ---
 
-### Requirements
+### Features
+TODO
+
+### Preparation
+
+#### 0) Requirements
 - python 3.7
 - mxnet 1.5.1
 - numpy < 1.18
@@ -29,23 +34,29 @@ DO NOT RUN THE CODE IN THIS STAGE!
 Note that `numpy 1.18` will cause problem for `pycocotools`.
 [See more](https://github.com/xingyizhou/CenterNet/issues/547).
 
-### Features
-TODO
+I'd suggest create a new conda environment.
 
-### Preparation
-##### 1) Code
+```
+conda create -n tinyyolo python=3.7 numpy=1.17 matplotlib tqdm opencv
+conda activate tinyyolo
+pip install mxnet-cu101mkl pycocotools
+```
+
+#### 1) Code
 ```
 git clone git@github.com:EletronicElephant/tiny_yolov3.git
 cd tiny_yolov3/gluon-cv
 python setup.py develop --user
 ```
 
-##### 2) Data
+#### 2) Data
 Up to now, only MS COCO-formatted dataset is supported.
 TODO
 
-##### 3) weights
+#### 3) weights
 TODO
+
+---
 
 ### Training
 TODO
