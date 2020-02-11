@@ -51,7 +51,12 @@ python setup.py develop --user
 
 #### 2) Data
 Up to now, only MS COCO-formatted dataset is supported.
-TODO
+```
+cd ./..  # return to the root
+mkdir data
+cd data
+ln -s /disk1/data/coco
+```
 
 #### 3) weights
 TODO
