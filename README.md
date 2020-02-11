@@ -120,5 +120,6 @@ export OMP_DYNAMIC="FALSE"
 
 ### Known Issues
 
-- Mixup will not work
-- `Adam` optimizer run slowly
+- Mixup will not work.
+- `Adam` optimizer runs slowly.
+- `bs>1` or `num_workers>1` may cause problems when evaluting. - UNTESTED
