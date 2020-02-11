@@ -7,12 +7,10 @@ This repo is still in active development.
 DO NOT RUN THE CODE IN THIS STAGE!
 
 # TODO
-- [ ] Wash all the info from previous project
-
-- [ ] Delete redundant files
-
-- [ ] Test Everything
-
+- [x] Delete redundant files
+- [x] `train.py`
+- [ ] `eval.py`
+- [ ] Test performance
 - [ ] FINISH IN ONE WEEK
 
 ---
@@ -86,6 +84,12 @@ python train.py --syncbn \
 --optimizer sgd \
 --label-smooth 
 ```
+
+Make sure you have 24GB gMemory for training with `batch-size=64` and `random-shape`.
+
+In other words, training with `bs=64` and `data-shape=640` will use 24GB gMemory.
+
+For a more commonly-used shape `416*416`, 12GB gMemory will be used for `bs=64` at `200 Samples/second` on a `Titan Xp`.
 
 ---
 
