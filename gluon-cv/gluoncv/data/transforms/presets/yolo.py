@@ -57,37 +57,11 @@ class YOLO3DefaultTrainTransform(object):
 
     def __call__(self, src, label):
         """Apply transform to training image/label."""
-        src = src.copyto(mx.gpu())
-        # random color jittering
-        img = experimental.image.random_color_distort(src)
+        # resize
+        h, w, _ = src.shape
+        img = timage.imresize(src, self._width, self._height, interp=9)
+        bbox = tbbox.resize(label, in_size=(w, h), out_size=(self._width, self._height))
 
-        # random expansion with prob 0.5
-        if np.random.uniform(0, 1) > 0.5:
-            img, expand = timage.random_expand(img, fill=[m * 255 for m in self._mean])
-            bbox = tbbox.translate(label, x_offset=expand[0], y_offset=expand[1])
-        else:
-            img, bbox = img, label
-
-        # random cropping
-        h, w, _ = img.shape
-        bbox, crop = experimental.bbox.random_crop_with_constraints(bbox, (w, h))
-        x0, y0, w, h = crop
-        img = mx.image.fixed_crop(img, x0, y0, w, h)
-
-        img = img.copyto(mx.cpu())
-
-        # resize with random interpolation
-        h, w, _ = img.shape
-        interp = np.random.randint(0, 5)
-        img = timage.imresize(img, self._width, self._height, interp=interp)
-        bbox = tbbox.resize(bbox, (w, h), (self._width, self._height))
-
-        # random horizontal flip
-        h, w, _ = img.shape
-        img, flips = timage.random_flip(img, px=0.5)
-        bbox = tbbox.flip(bbox, (w, h), flip_x=flips[0])
-
-        # to tensor
         img = mx.nd.image.to_tensor(img)
         img = mx.nd.image.normalize(img, mean=self._mean, std=self._std)
 
