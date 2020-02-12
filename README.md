@@ -1,17 +1,19 @@
-Test implementation of Tiny-YOLOv3. 
+Test implementation of Tiny-YOLO-v3. 
 
 Based on MXNet and Gluon-cv.
 
 This repo is still in active development.
 
-DO NOT RUN THE CODE IN THIS STAGE!
+I'm currently training the network, which may cost about half a week.
 
 # TODO
 - [x] Delete redundant files
 - [x] `train.py`
-- [ ] `eval.py`
+- [x] `eval.py`
+- [ ] Train the network
 - [ ] Test performance
 - [ ] FINISH IN ONE WEEK
+- [ ] Rewrite the transform part to save CPU load
 
 ---
 
@@ -59,7 +61,7 @@ ln -s /disk1/data/coco
 ```
 
 #### 3) weights
-I'm currently training the network!
+TODO
 
 ---
 
@@ -108,7 +110,7 @@ TODO
 I got a lot of code from [gluon-cv](https://github.com/dmlc/gluon-cv.git). Thanks.
 
 ### Comments
-If you encountered with high CPU-usage while training (especially on some machines that have more than 40 cores), you can set these environmental variavles
+If you encountered with high CPU-usage while training (especially on some machines that have more than 40 cores), you can set these environmental variables
 ```
 export MKL_NUM_THREADS="1"
 export MKL_DOMAIN_NUM_THREADS="MKL_BLAS=1"
@@ -118,8 +120,10 @@ export OMP_DYNAMIC="FALSE"
 ```
 [See more](http://www.diracprogram.org/doc/release-12/installation/mkl.html)
 
+MXNet currently doesn't provide any high-performance image-data-argumentation method. The whole training speed is largely infected by the transformer.
+
 ### Known Issues
 
 - Mixup will not work.
 - `Adam` optimizer runs slowly.
-- `bs>1` or `num_workers>1` may cause problems when evaluting. - UNTESTED
+- `bs>1` or `num_workers>1` may cause problems when evaluating. - UNTESTED
