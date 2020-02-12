@@ -82,8 +82,6 @@ class YOLO3DefaultTrainTransform(object):
         img = timage.imresize(img, self._width, self._height, interp=interp)
         bbox = tbbox.resize(bbox, (w, h), (self._width, self._height))
 
-        img = img.copyto(mx.gpu())
-
         # random horizontal flip
         h, w, _ = img.shape
         img, flips = timage.random_flip(img, px=0.5)
