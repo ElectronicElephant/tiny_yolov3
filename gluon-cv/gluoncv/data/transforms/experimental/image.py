@@ -35,24 +35,24 @@ def random_color_distort(src, brightness_delta=32, contrast_low=0.5, contrast_hi
     """
     def brightness(src, delta, p=0.5):
         """Brightness distortion."""
-        if np.random.uniform(0, 1) > p:
-            delta = np.random.uniform(-delta, delta)
+        if nd.random.uniform(0, 1) > p:
+            delta = nd.random.uniform(-delta, delta, ctx=src.context)
             src += delta
             return src
         return src
 
     def contrast(src, low, high, p=0.5):
         """Contrast distortion"""
-        if np.random.uniform(0, 1) > p:
-            alpha = np.random.uniform(low, high)
+        if nd.random.uniform(0, 1) > p:
+            alpha = nd.random.uniform(low, high, ctx=src.context)
             src *= alpha
             return src
         return src
 
     def saturation(src, low, high, p=0.5):
         """Saturation distortion."""
-        if np.random.uniform(0, 1) > p:
-            alpha = np.random.uniform(low, high)
+        if nd.random.uniform(0, 1) > p:
+            alpha = nd.random.uniform(low, high, ctx=src.context)
             gray = src * nd.array([[[0.299, 0.587, 0.114]]], ctx=src.context)
             gray = mx.nd.sum(gray, axis=2, keepdims=True)
             gray *= (1.0 - alpha)
@@ -63,20 +63,20 @@ def random_color_distort(src, brightness_delta=32, contrast_low=0.5, contrast_hi
 
     def hue(src, delta, p=0.5):
         """Hue distortion"""
-        if np.random.uniform(0, 1) > p:
+        if nd.random.uniform(0, 1) > p:
             alpha = random.uniform(-delta, delta)
             u = np.cos(alpha * np.pi)
             w = np.sin(alpha * np.pi)
-            bt = np.array([[1.0, 0.0, 0.0],
+            bt = nd.array([[1.0, 0.0, 0.0],
                            [0.0, u, -w],
                            [0.0, w, u]])
-            tyiq = np.array([[0.299, 0.587, 0.114],
+            tyiq = nd.array([[0.299, 0.587, 0.114],
                              [0.596, -0.274, -0.321],
                              [0.211, -0.523, 0.311]])
-            ityiq = np.array([[1.0, 0.956, 0.621],
+            ityiq = nd.array([[1.0, 0.956, 0.621],
                               [1.0, -0.272, -0.647],
                               [1.0, -1.107, 1.705]])
-            t = np.dot(np.dot(ityiq, bt), tyiq).T
+            t = nd.dot(nd.dot(ityiq, bt), tyiq).T
             src = nd.dot(src, nd.array(t, ctx=src.context))
             return src
         return src

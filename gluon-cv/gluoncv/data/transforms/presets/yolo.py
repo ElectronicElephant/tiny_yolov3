@@ -73,11 +73,15 @@ class YOLO3DefaultTrainTransform(object):
         x0, y0, w, h = crop
         img = mx.image.fixed_crop(img, x0, y0, w, h)
 
+        img = mx.nd.array(img, ctx=mx.cpu())
+
         # resize with random interpolation
         h, w, _ = img.shape
         interp = np.random.randint(0, 5)
         img = timage.imresize(img, self._width, self._height, interp=interp)
         bbox = tbbox.resize(bbox, (w, h), (self._width, self._height))
+
+        img = mx.nd.array(img, ctx=mx.gpu())
 
         # random horizontal flip
         h, w, _ = img.shape
