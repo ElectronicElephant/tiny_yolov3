@@ -124,6 +124,5 @@ MXNet currently doesn't provide any high-performance image-data-argumentation me
 
 ### Known Issues
 
-- Mixup will not work.
-- `Adam` optimizer runs slowly.
-- `bs>1` or `num_workers>1` may cause problems when evaluating. - UNTESTED
+- [UNTESTED] Mixup will not work.
+- [UNTESTED] `Adam` optimizer runs slowly.

@@ -17,13 +17,13 @@ def parse_args():
     parser.add_argument('--data-shape', type=int, default=416,
                         help="Input data shape for evaluation, use 320, 416, 608... ")
     parser.add_argument('--batch-size', type=int, default=1,
-                        help='Training mini-batch size. Values higher than 1 may cause problems.')
+                        help='Training mini-batch size.')
     parser.add_argument('--save-prefix', type=str, default='./results/',
                         help='Saving parameter prefix')
     parser.add_argument('--dataset', type=str, default='coco',
                         help='Training dataset. Only COCO is supported.')
-    parser.add_argument('--num-workers', '-j', dest='num_workers', type=int, default=1,
-                        help='Number of data workers. Values higher than 1 may cause problems.')
+    parser.add_argument('--num-workers', '-j', dest='num_workers', type=int, default=2,
+                        help='Number of data workers.')
     parser.add_argument('--gpus', type=str, default='0',
                         help='Eval with GPUs. We recommend using only 1 GPU to eval')
     parser.add_argument('--resume', type=str, default='',
