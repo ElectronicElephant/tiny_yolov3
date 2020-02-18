@@ -10,6 +10,7 @@ from gluoncv.data.transforms.presets.yolo import YOLO3DefaultValTransform
 from gluoncv.data.mscoco.detection import COCODetection
 from gluoncv.utils.metrics.coco_detection import COCODetectionMetric
 from tqdm import tqdm
+from time import time
 
 
 def parse_args():
@@ -34,6 +35,8 @@ def parse_args():
                         help='To save the detection result to json files')
     parser.add_argument('--score-thresh', type=float, default=0.001,
                         help='Detections will be ignored if confidence scores < threshold.')
+    parser.add_argument('--benchmark', action='store_true',
+                        help='Benchmark the net inference speed.')
     return parser.parse_args()
 
 
@@ -56,6 +59,32 @@ def get_dataloader(val_dataset, data_shape, batch_size, num_workers, args):
         val_dataset.transform(YOLO3DefaultValTransform(width, height)),
         batch_size, False, last_batch='keep', num_workers=num_workers, batchify_fn=batchify_fn)
     return val_loader
+
+
+def benchmark(net, val_data, ctx, size, args):
+    """Test the network inference speed."""
+    net.collect_params().reset_ctx(ctx)
+    net.hybridize()
+    # set nms threshold and topk constraint
+    net.set_nms(nms_thresh=0.45, nms_topk=400)
+
+    mx.nd.waitall()
+    with tqdm(total=size, ncols=0) as pbar:
+        for ib, batch in enumerate(val_data):
+            data = gluon.utils.split_and_load(batch[0], ctx_list=ctx, batch_axis=0, even_split=False)
+            inf_time = 0
+            for x in data:  # y stands for img_info
+                mx.nd.waitall()
+                a_tic = time()
+                ids, scores, bboxes = net(x)
+                mx.nd.waitall()
+                b_tic = time()
+                inf_time += (b_tic - a_tic)
+
+            pbar.update(batch[0].shape[0])
+            pbar.set_description("Batch %.3f s | %.2f fps" % (inf_time, batch[0].shape[0] / inf_time))
+
+    return eval_metric.get()
 
 
 def validate(net, val_data, ctx, eval_metric, size, args):
@@ -137,5 +166,11 @@ if __name__ == '__main__':
     # val data
     val_dataset, eval_metric = get_dataset(args.dataset, args)
     val_data = get_dataloader(val_dataset, args.data_shape, args.batch_size, args.num_workers, args)
-    # Valing
-    demo_val(net, val_data, eval_metric, ctx, args)
+
+    if args.benchmark:
+        print(f'Benchmarking the inference speed...')
+        print(f'data-shape {args.data_shape} | batch-size {args.batch_size}')
+        benchmark(net, val_data, ctx, len(val_dataset), args)
+    else:
+        # Validating
+        demo_val(net, val_data, eval_metric, ctx, args)
