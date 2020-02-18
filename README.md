@@ -4,21 +4,12 @@ Based on MXNet and Gluon-cv.
 
 This repo is still in active development.
 
-I'm currently training the network, which may cost about half a week.
-
-# TODO
-- [x] Delete redundant files
-- [x] `train.py`
-- [x] `eval.py`
-- [ ] Train the network
-- [ ] Test performance
-- [ ] FINISH IN ONE WEEK
-- [ ] Rewrite the transform part to save CPU load
-
 ---
 
 ### Features
-TODO
+- Modern days tricks, including multi-scale training and mix-up
+- Pretrained weights and logs provided
+- EXTREMELY FAST (See below)
 
 ### Preparation
 
@@ -61,7 +52,24 @@ ln -s /disk1/data/coco
 ```
 
 #### 3) weights
-TODO
+`weights/best.params`
+
+Evaluation results on COCO `val2017` is listed below.
+
+```
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.139
+Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.297
+Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.114
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.047
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.137
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.224
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.159
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.248
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.262
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.100
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.270
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.406
+```
 
 ---
 
@@ -71,7 +79,7 @@ You can either edit the parameters by changing the default values in `trian.py` 
 Personally, I would recommend create a new file named `train.sh` and adds
 
 ```
-python train.py --syncbn \
+python train.py \
 --batch-size 64 \
 --gpus 4,5  \
 --num-workers 16 \
@@ -96,13 +104,36 @@ For a more commonly-used shape `416*416`, 12GB gMemory will be used for `bs=64` 
 ---
 
 ### Evaluation
-TODO
+I believe online-evaluating is stupid, for it can waste valuable training time.
+Instead, I would suggest a `bash` trick.
+```                                                                    
+for epoch in {0000..0199..1}
+do
+    while [ ! -f ./results/yolo3_tiny_darknet_coco_${epoch}.params ]
+    do
+    echo -n "."
+    sleep 60
+    done
+
+    python eval.py --data-shape 416 \
+    --save-prefix ./results/ \
+    --gpus 3 --batch-size 4 --num-workers 4 --start-epoch ${epoch} 
+done           
+```
 
 ### Demo
 TODO
 
 ### Benchmarking the speed of network
-TODO
+`python eval.py --resume weights/best.params --benchmark`
+
+Here is the test result on `Titan Xp`
+
+| data-shape |   fps (bs=1) |fps (bs=8)
+|:----------:|:------:|:------:|
+| 320        |   218  |633|
+|416|204|638|
+|608|156|327|
 
 ---
 
