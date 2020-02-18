@@ -69,6 +69,7 @@ def benchmark(net, val_data, ctx, size, args):
     net.set_nms(nms_thresh=0.45, nms_topk=400)
 
     mx.nd.waitall()
+    total_time = 0
     with tqdm(total=size, ncols=0) as pbar:
         for ib, batch in enumerate(val_data):
             data = gluon.utils.split_and_load(batch[0], ctx_list=ctx, batch_axis=0, even_split=False)
@@ -80,10 +81,12 @@ def benchmark(net, val_data, ctx, size, args):
                 mx.nd.waitall()
                 b_tic = time()
                 inf_time += (b_tic - a_tic)
+            total_time += inf_time
 
             pbar.update(batch[0].shape[0])
-            pbar.set_description("Batch %.3f s | %.2f fps" % (inf_time, batch[0].shape[0] / inf_time))
+            pbar.set_description("Batch %.4f s | fps %.2f" % (inf_time, batch[0].shape[0] / inf_time))
 
+    print('Average fps %.2f' % size / total_time)
     return eval_metric.get()
 
 
