@@ -2,12 +2,12 @@ Test implementation of Tiny-YOLO-v3.
 
 Based on MXNet and Gluon-cv.
 
-This repo is still in active development.
+This repo is in active development. Issues are welcomed.
 
 ---
 
 ### Features
-- Modern days tricks, including multi-scale training and mix-up
+- Morden-day tricks, including multi-scale training and mix-up
 - Pretrained weights and logs provided
 - EXTREMELY FAST (See below)
 
@@ -25,7 +25,7 @@ This repo is still in active development.
 Note that `numpy 1.18` will cause problem for `pycocotools`.
 [See more](https://github.com/xingyizhou/CenterNet/issues/547).
 
-I'd suggest create a new conda environment.
+I'd suggest creating a new conda environment.
 
 ```
 conda create -n tinyyolo python=3.7 numpy=1.17 matplotlib tqdm opencv Cython
@@ -54,7 +54,7 @@ ln -s /disk1/data/coco
 #### 3) weights
 `weights/best.params`
 
-Evaluation results on COCO `val2017` is listed below.
+Evaluation results on COCO `val2017` are listed below.
 
 ```
 Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.139
@@ -76,7 +76,7 @@ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.406
 ### Training
 You can either edit the parameters by changing the default values in `trian.py` or specify it.
 
-Personally, I would recommend create a new file named `train.sh` and adds
+Personally, I would recommend creating a new file named `train.sh` and adds
 
 ```
 python train.py \
