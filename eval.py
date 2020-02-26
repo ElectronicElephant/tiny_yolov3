@@ -88,7 +88,7 @@ def benchmark(net, val_data, ctx, size, args):
             pbar.set_description("Batch %.4f s | fps %.2f" % (inf_time, batch[0].shape[0] / inf_time))
 
     print('Average fps %.2f' % ((size-50) / total_time))
-    return eval_metric.get()
+    return None
 
 
 def validate(net, val_data, ctx, eval_metric, size, args):
